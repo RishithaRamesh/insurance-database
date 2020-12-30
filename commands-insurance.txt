@@ -1,0 +1,314 @@
+CREATE DATABASE INSURANCE_DB;
+USE INSURANCE_DB;
+
+CREATE TABLE PERSON (driver_id VARCHAR(10),
+name VARCHAR(20) NOT NULL,address VARCHAR(100),
+PRIMARY KEY(driver_id));
+
+CREATE TABLE CAR (regno VARCHAR(10),
+model VARCHAR(20), year INTEGER,
+driver_id VARCHAR(10) NOT NULL, PRIMARY KEY(regno),
+FOREIGN KEY(driver_id) REFERENCES PERSON(driver_id) ON UPDATE CASCADE ON DELETE CASCADE);
+
+CREATE TABLE ACCIDENT (report_number INTEGER,
+acc_date DATE, location VARCHAR(100),
+PRIMARY KEY(report_number));
+
+CREATE TABLE PARTICIPATED (driver_id VARCHAR(10),
+regno VARCHAR(10), report_number INTEGER,
+damage_amount INTEGER, PRIMARY KEY(driver_id, regno, report_number),
+FOREIGN KEY(driver_id) REFERENCES PERSON(driver_id) ON UPDATE CASCADE ON DELETE CASCADE,
+FOREIGN KEY(regno) REFERENCES CAR(regno) ON UPDATE CASCADE ON DELETE CASCADE,
+FOREIGN KEY(report_number) REFERENCES ACCIDENT(report_number) ON UPDATE CASCADE ON DELETE CASCADE);
+
+INSERT INTO PERSON VALUES('1','ADAM','CALIFORNIA');
+INSERT INTO PERSON VALUES('2','CHRISTOPHER','NEW YORK');
+INSERT INTO PERSON VALUES('3','BARRY','NEW JERSEY');
+INSERT INTO PERSON VALUES('4','CISCO','SAN JOSE');
+INSERT INTO PERSON VALUES('5','ALFERD','CALIFORNIA');
+INSERT INTO PERSON VALUES('6','JOHN','NEW JERSEY');
+INSERT INTO PERSON VALUES('7','PHILIP','CALIFPRNIA');
+INSERT INTO PERSON VALUES('8','DANIEL','CALIFORNIA');
+INSERT INTO PERSON VALUES('9','SIMON','NEW YORK');
+INSERT INTO PERSON VALUES('10','MARIO','SAN JOSE');
+SELECT * FROM PERSON;
+/*******************************
++-----------+-------------+------------+
+| driver_id | name        | address    |
++-----------+-------------+------------+
+| 1         | ADAM        | CALIFORNIA |
+| 10        | MARIO       | SAN JOSE   |
+| 2         | CHRISTOPHER | NEW YORK   |
+| 3         | BARRY       | NEW JERSEY |
+| 4         | CISCO       | SAN JOSE   |
+| 5         | ALFERD      | CALIFORNIA |
+| 6         | JOHN        | NEW JERSEY |
+| 7         | PHILIP      | CALIFPRNIA |
+| 8         | DANIEL      | CALIFORNIA |
+| 9         | SIMON       | NEW YORK   |
++-----------+-------------+------------+
+10 rows in set (0.01 sec)
+*******************************/
+
+INSERT INTO CAR VALUES('1','FORD MUSTANG',1998,'1');
+INSERT INTO CAR VALUES('2','TESLA MODEL 3',2019,'1');
+INSERT INTO CAR VALUES('3','TESLA MODEL S',2020,'2');
+INSERT INTO CAR VALUES('4','FORD MUSTANG',1998,'3');
+INSERT INTO CAR VALUES('5','LOTUS EVIJA',2019,'4');
+INSERT INTO CAR VALUES('6','TESLA MODEL Y',2020,'5');
+INSERT INTO CAR VALUES('7','FORD MUSTANG',1998,'5');
+INSERT INTO CAR VALUES('8','LEMBORGANI HURACAN',2000,'6');
+INSERT INTO CAR VALUES('9','FORD MUSTANG',1998,'7');
+INSERT INTO CAR VALUES('10','BMW VISION INEXT',2020,'8');
+INSERT INTO CAR VALUES('11','FORD MUSTANG',1998,'9');
+INSERT INTO CAR VALUES('12','FORD MUSTANG',1998,'10');
+INSERT INTO CAR VALUES('13','TESLA MODEL S',2020,'10');
+INSERT INTO CAR VALUES('14','LOTUS EVIJA',2019,'10');
+SELECT * FROM CAR;
+/*******************************
++-------+--------------------+------+-----------+
+| regno | model              | year | driver_id |
++-------+--------------------+------+-----------+
+| 1     | FORD MUSTANG       | 1998 | 1         |
+| 10    | BMW VISION INEXT   | 2020 | 8         |
+| 11    | FORD MUSTANG       | 1998 | 9         |
+| 12    | FORD MUSTANG       | 1998 | 10        |
+| 13    | TESLA MODEL S      | 2020 | 10        |
+| 14    | LOTUS EVIJA        | 2019 | 10        |
+| 2     | TESLA MODEL 3      | 2019 | 1         |
+| 3     | TESLA MODEL S      | 2020 | 2         |
+| 4     | FORD MUSTANG       | 1998 | 3         |
+| 5     | LOTUS EVIJA        | 2019 | 4         |
+| 6     | TESLA MODEL Y      | 2020 | 5         |
+| 7     | FORD MUSTANG       | 1998 | 5         |
+| 8     | LEMBORGANI HURACAN | 2000 | 6         |
+| 9     | FORD MUSTANG       | 1998 | 7         |
++-------+--------------------+------+-----------+
+14 rows in set (0.01 sec)
+*******************************/
+
+INSERT INTO ACCIDENT VALUES(1,'2020-06-17','CALIFORNIA');
+INSERT INTO ACCIDENT VALUES(2,'2020-08-03','NEW YORK');
+INSERT INTO ACCIDENT VALUES(3,'2020-06-17','CALIFORNIA');
+INSERT INTO ACCIDENT VALUES(4,'2020-06-23','SAN JOSE');
+INSERT INTO ACCIDENT VALUES(5,'2020-01-17','NEW JERSEY');
+SELECT * FROM ACCIDENT;
+/*******************************
++---------------+------------+------------+
+| report_number | acc_date   | location   |
++---------------+------------+------------+
+|             1 | 2020-06-17 | CALIFORNIA |
+|             2 | 2020-08-03 | NEW YORK   |
+|             3 | 2020-06-17 | CALIFORNIA |
+|             4 | 2020-06-23 | SAN JOSE   |
+|             5 | 2020-01-17 | NEW JERSEY |
++---------------+------------+------------+
+5 rows in set (0.03 sec)
+*******************************/
+
+INSERT INTO PARTICIPATED VALUES('1','1',1,1000);
+INSERT INTO PARTICIPATED VALUES('5','6',1,1000);
+INSERT INTO PARTICIPATED VALUES('1','1',3,1500);
+INSERT INTO PARTICIPATED VALUES('10','12',4,2000);
+INSERT INTO PARTICIPATED VALUES('9','11',2,1500);
+INSERT INTO PARTICIPATED VALUES('3','4',5,1000);
+INSERT INTO PARTICIPATED VALUES('6','8',5,1000);
+SELECT * FROM PARTICIPATED;
+/*******************************
++-----------+-------+---------------+---------------+
+| driver_id | regno | report_number | damage_amount |
++-----------+-------+---------------+---------------+
+| 1         | 1     |             1 |          1000 |
+| 1         | 1     |             3 |          1500 |
+| 10        | 12    |             4 |          2000 |
+| 3         | 4     |             5 |          1000 |
+| 5         | 6     |             1 |          1000 |
+| 6         | 8     |             5 |          1000 |
+| 9         | 11    |             2 |          1500 |
++-----------+-------+---------------+---------------+
+7 rows in set (0.01 sec)
+*******************************/
+
+SELECT driver_id, name FROM PERSON WHERE ADDRESS LIKE "CAL%";
+/*******************************
++-----------+--------+
+| driver_id | name   |
++-----------+--------+
+| 1         | ADAM   |
+| 5         | ALFERD |
+| 7         | PHILIP |
+| 8         | DANIEL |
++-----------+--------+
+4 rows in set (0.00 sec)
+*******************************/
+
+SELECT DISTINCT model FROM CAR WHERE year BETWEEN 1990 AND 2000;
+/*******************************
++--------------------+
+| model              |
++--------------------+
+| FORD MUSTANG       |
+| LEMBORGANI HURACAN |
++--------------------+
+2 rows in set (0.00 sec)
+*******************************/
+
+SELECT name,model FROM PERSON, CAR WHERE PERSON.driver_id = CAR.driver_id;
+/*******************************
++-------------+--------------------+
+| name        | model              |
++-------------+--------------------+
+| ADAM        | FORD MUSTANG       |
+| ADAM        | TESLA MODEL 3      |
+| MARIO       | FORD MUSTANG       |
+| MARIO       | TESLA MODEL S      |
+| MARIO       | LOTUS EVIJA        |
+| CHRISTOPHER | TESLA MODEL S      |
+| BARRY       | FORD MUSTANG       |
+| CISCO       | LOTUS EVIJA        |
+| ALFERD      | TESLA MODEL Y      |
+| ALFERD      | FORD MUSTANG       |
+| JOHN        | LEMBORGANI HURACAN |
+| PHILIP      | FORD MUSTANG       |
+| DANIEL      | BMW VISION INEXT   |
+| SIMON       | FORD MUSTANG       |
++-------------+--------------------+
+14 rows in set (0.00 sec)
+*******************************/
+
+SELECT address AS STATE, COUNT(*) AS NUMBER FROM PERSON GROUP BY address;
+/*******************************
++------------+--------+
+| STATE      | NUMBER |
++------------+--------+
+| CALIFORNIA |      3 |
+| SAN JOSE   |      2 |
+| NEW YORK   |      2 |
+| NEW JERSEY |      2 |
+| CALIFPRNIA |      1 |
++------------+--------+
+5 rows in set (0.00 sec)
+*******************************/
+
+SELECT AVG(damage_amount) AS AVG_DMG_AMT, MAX(damage_amount) AS MAX_DMG_AMT, model, year FROM CAR,PERSON,PARTICIPATED 
+WHERE PARTICIPATED.driver_id = PERSON.driver_id 
+AND PERSON.driver_id = CAR.driver_id GROUP BY model
+HAVING year >= 2000;
+/*******************************
++-------------+-------------+--------------------+------+
+| AVG_DMG_AMT | MAX_DMG_AMT | model              | year |
++-------------+-------------+--------------------+------+
+|   1250.0000 |        1500 | TESLA MODEL 3      | 2019 |
+|   2000.0000 |        2000 | TESLA MODEL S      | 2020 |
+|   2000.0000 |        2000 | LOTUS EVIJA        | 2019 |
+|   1000.0000 |        1000 | TESLA MODEL Y      | 2020 |
+|   1000.0000 |        1000 | LEMBORGANI HURACAN | 2000 |
++-------------+-------------+--------------------+------+
+5 rows in set (0.00 sec)
+*******************************/
+
+SELECT * FROM CAR GROUP BY model ORDER BY model DESC;
+/*******************************
++-------+--------------------+------+-----------+
+| regno | model              | year | driver_id |
++-------+--------------------+------+-----------+
+| 6     | TESLA MODEL Y      | 2020 | 5         |
+| 13    | TESLA MODEL S      | 2020 | 10        |
+| 2     | TESLA MODEL 3      | 2019 | 1         |
+| 14    | LOTUS EVIJA        | 2019 | 10        |
+| 8     | LEMBORGANI HURACAN | 2000 | 6         |
+| 1     | FORD MUSTANG       | 1998 | 1         |
+| 10    | BMW VISION INEXT   | 2020 | 8         |
++-------+--------------------+------+-----------+
+7 rows in set (0.00 sec)
+*******************************/
+
+SELECT name,model FROM PERSON, CAR WHERE PERSON.driver_id = CAR.driver_id
+AND ADDRESS LIKE "CAL%" UNION SELECT name,model FROM PERSON, CAR 
+WHERE PERSON.driver_id = CAR.driver_id AND ADDRESS LIKE "NEW%";
+/*******************************
++-------------+--------------------+
+| name        | model              |
++-------------+--------------------+
+| ADAM        | FORD MUSTANG       |
+| ADAM        | TESLA MODEL 3      |
+| ALFERD      | TESLA MODEL Y      |
+| ALFERD      | FORD MUSTANG       |
+| PHILIP      | FORD MUSTANG       |
+| DANIEL      | BMW VISION INEXT   |
+| CHRISTOPHER | TESLA MODEL S      |
+| BARRY       | FORD MUSTANG       |
+| JOHN        | LEMBORGANI HURACAN |
+| SIMON       | FORD MUSTANG       |
++-------------+--------------------+
+10 rows in set (0.00 sec)
+*******************************/
+
+SELECT DISTINCT model FROM (SELECT model FROM PERSON, CAR WHERE PERSON.driver_id = CAR.driver_id
+AND ADDRESS LIKE "CAL%") query1 INNER JOIN (SELECT model FROM PERSON, CAR 
+WHERE PERSON.driver_id = CAR.driver_id AND ADDRESS LIKE "NEW%") query2 USING (model);
+/*******************************
++--------------+
+| model        |
++--------------+
+| FORD MUSTANG |
++--------------+
+1 row in set (0.00 sec)
+*******************************/
+
+SELECT name FROM PERSON WHERE EXISTS (SELECT  driver_id FROM PARTICIPATED 
+WHERE PERSON.driver_id= PARTICIPATED.driver_id);
+/*******************************
++--------+
+| name   |
++--------+
+| ADAM   |
+| MARIO  |
+| BARRY  |
+| ALFERD |
+| JOHN   |
+| SIMON  |
++--------+
+6 rows in set (0.00 sec)
+*******************************/
+
+SELECT name FROM PERSON WHERE  NOT EXISTS (SELECT  driver_id FROM PARTICIPATED 
+WHERE PERSON.driver_id= PARTICIPATED.driver_id AND ADDRESS = 'CALIFORNIA');
+/*******************************
++-------------+
+| name        |
++-------------+
+| MARIO       |
+| CHRISTOPHER |
+| BARRY       |
+| CISCO       |
+| JOHN        |
+| PHILIP      |
+| DANIEL      |
+| SIMON       |
++-------------+
+8 rows in set (0.00 sec)
+*******************************/
+
+SELECT name, model FROM PERSON NATURAL JOIN CAR;
+/*******************************
++-------------+--------------------+
+| name        | model              |
++-------------+--------------------+
+| ADAM        | FORD MUSTANG       |
+| ADAM        | TESLA MODEL 3      |
+| MARIO       | FORD MUSTANG       |
+| MARIO       | TESLA MODEL S      |
+| MARIO       | LOTUS EVIJA        |
+| CHRISTOPHER | TESLA MODEL S      |
+| BARRY       | FORD MUSTANG       |
+| CISCO       | LOTUS EVIJA        |
+| ALFERD      | TESLA MODEL Y      |
+| ALFERD      | FORD MUSTANG       |
+| JOHN        | LEMBORGANI HURACAN |
+| PHILIP      | FORD MUSTANG       |
+| DANIEL      | BMW VISION INEXT   |
+| SIMON       | FORD MUSTANG       |
++-------------+--------------------+
+14 rows in set (0.00 sec)
+*******************************/
