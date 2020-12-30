@@ -6,4 +6,4 @@ CAR,
 ACCIDENT,
 PARTICIPATED.
 
-DDL and DML statements given in commands-insurance.
+DDL and DML statements given in commands-insurance.txt
