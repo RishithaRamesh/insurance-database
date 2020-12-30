@@ -4,4 +4,6 @@ Tables:
 PERSON,
 CAR,
 ACCIDENT,
-PARTICIPATED,
+PARTICIPATED.
+
+DDL and DML statements given in commands-insurance.
